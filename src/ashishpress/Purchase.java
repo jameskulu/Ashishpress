@@ -144,7 +144,6 @@ public class Purchase extends javax.swing.JFrame {
         totalAmountLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setResizable(false);
 
         jLabel1.setText("Date");
 
