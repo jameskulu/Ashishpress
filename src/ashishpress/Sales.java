@@ -1,22 +1,104 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ashishpress;
 
-/**
- *
- * @author James
- */
+import com.sun.glass.events.KeyEvent;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.RowFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
+
+
 public class Sales extends javax.swing.JFrame {
 
-    /**
-     * Creates new form Sales
-     */
     public Sales() {
         initComponents();
+        show_sales_table();
+        total_amount_func();
     }
+    
+     public ArrayList<SaleSets> saleList(){
+        ArrayList<SaleSets> saleList = new ArrayList<>();
+        try{
+        Database db = new Database();
+        String query="select * from sales";
+        Statement st =db.conn.createStatement();
+        ResultSet rs = st.executeQuery(query);
+        SaleSets sale;
+        while(rs.next()){
+            sale=new SaleSets(rs.getInt("sale_id"),
+                    rs.getString("date"),
+                    rs.getString("party_name"),
+                    rs.getString("invoice_no"),
+                     rs.getString("payment_method"),       
+                    rs.getString("sale_item"),
+                    rs.getString("quantity"),      
+                    rs.getDouble("debit"),
+                    rs.getDouble("credit"),
+                     rs.getDouble("amount"),
+                    rs.getString("remarks")        
+            );
+            saleList.add(sale);
+        }
+        }
+        catch(Exception ex){
+        }
+        return saleList;
+    }
+   
+   
+   public void total_amount_func(){
+        int numrow = jtablesales.getRowCount();
+        
+        double tot = 0;
+        
+        for (int i = 0; i < numrow; i++) {
+            double val = Double.valueOf(jtablesales.getValueAt(i, 9).toString());
+            tot += val ;
+            
+            
+        }
+        totalAmountLabel.setText("Total Balance : Rs."+Double.toString(tot));
+   }
+    
+    public void show_sales_table(){
+        ArrayList<SaleSets> list = saleList();
+        DefaultTableModel model =(DefaultTableModel)jtablesales.getModel();
+        Object[] row = new Object[11];
+        for(int i=0; i<list.size();i++){
+            row[0]=list.get(i).getId();
+            row[1]=list.get(i).getdate();
+            row[2]=list.get(i).getparty_name();
+            row[3]=list.get(i).getinvoice_no();
+            row[4]=list.get(i).getpayment_method();
+            row[5]=list.get(i).getsale_item();
+            row[6]=list.get(i).getquantity();
+            row[7]=list.get(i).getdebit();
+            row[8]=list.get(i).getcredit();
+            row[9]=list.get(i).getamount();
+            row[10]=list.get(i).getremarks();
+            
+            model.addRow(row);
+        }
+    }
+    
+    public double parseDouble(String s){
+    if(s == null || s.isEmpty()) 
+        return 0.0;
+    else
+        return Double.parseDouble(s);
+}
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -27,21 +109,804 @@ public class Sales extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        txtDate = new javax.swing.JTextField();
+        txtPartyName = new javax.swing.JTextField();
+        txtInvoice = new javax.swing.JTextField();
+        txtPurchasedItem = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jtablesales = new javax.swing.JTable();
+        btnDelete = new javax.swing.JButton();
+        btnAdd = new javax.swing.JButton();
+        btnClear = new javax.swing.JButton();
+        btnUpdate = new javax.swing.JButton();
+        jLabel6 = new javax.swing.JLabel();
+        txtQuantity = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        txtAmount = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
+        txtDebit = new javax.swing.JTextField();
+        jLabel9 = new javax.swing.JLabel();
+        txtCredit = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        searchPurchasedTxt = new javax.swing.JTextField();
+        btnExport = new javax.swing.JButton();
+        comboPaymentMethod = new javax.swing.JComboBox();
+        jLabel11 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
+        jLabel12 = new javax.swing.JLabel();
+        txtRemarks = new javax.swing.JTextField();
+        jButton2 = new javax.swing.JButton();
+        totalAmountLabel = new javax.swing.JLabel();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
+
+        txtDate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtDateActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("Date");
+
+        jLabel2.setText("Party Name");
+
+        jLabel3.setText("Invoice No.");
+
+        jLabel4.setText("Sales Item");
+
+        jLabel5.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
+        jLabel5.setText("Sales");
+
+        jtablesales.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "S.N", "Date", "Party Name", "Invoice No", "Payment Method", "Sales Item", "Quantity", "Debit", "Credit", "Balance", "Remarks"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jtablesales.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jtablesalesMouseClicked(evt);
+            }
+        });
+        jtablesales.setRowHeight(jtablesales.getRowHeight() + 20);
+        jtablesales.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jtablesalesMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(jtablesales);
+        if (jtablesales.getColumnModel().getColumnCount() > 0) {
+            jtablesales.getColumnModel().getColumn(0).setMaxWidth(35);
+            jtablesales.getColumnModel().getColumn(10).setMinWidth(120);
+        }
+
+        btnDelete.setBackground(new java.awt.Color(255, 0, 0));
+        btnDelete.setForeground(new java.awt.Color(255, 255, 255));
+        btnDelete.setText("Delete");
+        btnDelete.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
+
+        btnAdd.setBackground(new java.awt.Color(0, 51, 204));
+        btnAdd.setForeground(new java.awt.Color(255, 255, 255));
+        btnAdd.setText("Add");
+        btnAdd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddActionPerformed(evt);
+            }
+        });
+
+        btnClear.setBackground(new java.awt.Color(153, 153, 153));
+        btnClear.setForeground(new java.awt.Color(255, 255, 255));
+        btnClear.setText("Clear all");
+        btnClear.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnClear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClearActionPerformed(evt);
+            }
+        });
+
+        btnUpdate.setBackground(new java.awt.Color(255, 255, 51));
+        btnUpdate.setText("Update");
+        btnUpdate.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpdateActionPerformed(evt);
+            }
+        });
+
+        jLabel6.setText("Quantity");
+
+        txtQuantity.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtQuantityActionPerformed(evt);
+            }
+        });
+
+        jLabel7.setText("Balance");
+
+        txtAmount.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtAmountKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtAmountKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtAmountKeyTyped(evt);
+            }
+        });
+
+        jLabel8.setText("Debit");
+
+        txtDebit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtDebitActionPerformed(evt);
+            }
+        });
+        txtDebit.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtDebitKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtDebitKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtDebitKeyTyped(evt);
+            }
+        });
+
+        jLabel9.setText("Credit");
+
+        txtCredit.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtCreditKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtCreditKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtCreditKeyTyped(evt);
+            }
+        });
+
+        jLabel10.setText("Payment Method");
+
+        searchPurchasedTxt.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                searchPurchasedTxtKeyReleased(evt);
+            }
+        });
+
+        btnExport.setBackground(new java.awt.Color(0, 255, 255));
+        btnExport.setText("Export to CSV");
+        btnExport.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnExport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExportActionPerformed(evt);
+            }
+        });
+
+        comboPaymentMethod.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Cheque", "Cash" }));
+        comboPaymentMethod.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboPaymentMethodActionPerformed(evt);
+            }
+        });
+
+        jLabel11.setText("Search:");
+
+        jButton1.setText("Back to Menu");
+        jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jLabel12.setText("Remarks");
+
+        txtRemarks.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtRemarksKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtRemarksKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtRemarksKeyTyped(evt);
+            }
+        });
+
+        jButton2.setText("History");
+        jButton2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 776, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(28, 28, 28)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                                .addComponent(jLabel12)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                    .addComponent(txtDebit, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.LEADING))
+                                                .addGap(18, 18, 18)))
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(jLabel9)
+                                            .addComponent(txtCredit, javax.swing.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE)
+                                            .addComponent(txtAmount)
+                                            .addComponent(txtRemarks)))
+                                    .addComponent(jLabel8)
+                                    .addComponent(btnExport, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(btnDelete, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(btnClear, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(btnAdd, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(btnUpdate, javax.swing.GroupLayout.DEFAULT_SIZE, 95, Short.MAX_VALUE)))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel4)
+                                            .addComponent(jLabel6))
+                                        .addGap(19, 19, 19)
+                                        .addComponent(txtQuantity))))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(26, 26, 26)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(txtPurchasedItem, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                            .addComponent(jLabel10)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                            .addComponent(comboPaymentMethod, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel1)
+                                            .addComponent(jLabel2)
+                                            .addComponent(jLabel3)
+                                            .addComponent(jButton1))
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addGap(2, 2, 2)
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                    .addComponent(txtDate, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addComponent(txtPartyName, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addComponent(txtInvoice, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(jButton2)))))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 974, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(318, 318, 318)
+                                .addComponent(jLabel5)
+                                .addGap(0, 0, Short.MAX_VALUE))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(totalAmountLabel)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel11)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(searchPurchasedTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addGap(36, 36, 36))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 504, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(jButton2)
+                    .addComponent(jLabel5))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(searchPurchasedTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel11))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtDate, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel1))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtPartyName, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtInvoice, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3))
+                        .addGap(12, 12, 12)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel10)
+                            .addComponent(comboPaymentMethod, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtPurchasedItem, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel6))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel8)
+                            .addComponent(jLabel9))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtCredit, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtDebit, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtAmount, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel7))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtRemarks, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel12))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnDelete)
+                            .addComponent(btnAdd))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnClear)
+                            .addComponent(btnUpdate))
+                        .addGap(18, 18, 18)
+                        .addComponent(btnExport))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 570, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(totalAmountLabel)
+                .addContainerGap(31, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+         
+        if (txtPurchasedItem.getText().equals("")){
+           JOptionPane.showMessageDialog(this, "Please enter sales item!");
+       }
+       else{
+           try {
+                int result;
+                Database db=new Database();
+                result = db.save_sales(txtDate.getText(),
+                        txtPartyName.getText(),
+                        txtInvoice.getText(),
+                        (String)comboPaymentMethod.getSelectedItem(),
+                        txtPurchasedItem.getText(),
+                        txtQuantity.getText(),
+                        parseDouble(txtDebit.getText()),
+                        parseDouble(txtCredit.getText()),
+                         parseDouble(txtAmount.getText()),
+                        txtRemarks.getText());
+                    
+            
+                if(result>0)
+                {
+                    
+                    DefaultTableModel model = (DefaultTableModel)jtablesales.getModel();
+                    model.setRowCount(0);
+                    show_sales_table();
+                    
+//                    For history
+                     db.save_sales_history(txtDate.getText(),
+                        txtPartyName.getText(),
+                        txtInvoice.getText(),
+                         (String)comboPaymentMethod.getSelectedItem(),
+                        txtPurchasedItem.getText(),
+                        txtQuantity.getText(),
+                        parseDouble(txtDebit.getText()),
+                        parseDouble(txtCredit.getText()),
+                         parseDouble(txtAmount.getText()),
+                        txtRemarks.getText());
+                     
+                     
+                     JOptionPane.showMessageDialog(null,"Added");
+                     
+                     txtDate.setText("");
+                     txtPartyName.setText("");
+                     txtInvoice.setText("");
+                     txtQuantity.setText("");
+                     txtPurchasedItem.setText("");
+                     txtAmount.setText("");
+                     txtDebit.setText("");
+                     txtCredit.setText(""); 
+                     txtRemarks.setText((""));
+                }
+                else
+                {
+                    JOptionPane.showMessageDialog(null,"Unable to save!");
+                }
+            } catch (Exception e) {
+                 JOptionPane.showMessageDialog(null,e);
+                 System.out.println(e);
+            }
+         
+           
+        }
+        total_amount_func();
+       
+    }//GEN-LAST:event_btnAddActionPerformed
+
+    private void txtDebitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDebitActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtDebitActionPerformed
+
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+           if (txtPurchasedItem.getText().equals("")){
+           JOptionPane.showMessageDialog(this, "Please enter purchased item!");
+       }
+                
+        else{
+          int a = JOptionPane.showConfirmDialog(null,"Do you sure want to delete this ?","Delete",JOptionPane.YES_NO_OPTION);
+        if(a==0){ 
+        int row = jtablesales.getSelectedRow();
+       if(row!=-1)
+       {
+           String NOMER = jtablesales.getValueAt(row, 0).toString();
+           System.out.println(NOMER);
+
+           String sql = "DELETE FROM sales WHERE sale_id='"+NOMER+"'";
+           String resetno = "ALTER TABLE sales DROP sale_id";
+//           String resetno="BEGIN TRANSACTION;\n" +
+//                            "CREATE TEMPORARY TABLE t1_backup(date,party_name,invoice_no,purchased_item,quantity,amount,debit,credit,payment_method);\n" +
+//                            "INSERT INTO t1_backup SELECT date,party_name,invoice_no,purchased_item,quantity,amount,debit,credit,payment_method FROM purchase;\n" +
+//                            "DROP TABLE purchase;\n"+
+//                            "CREATE TABLE purchase(date,party_name,invoice_no,purchased_item,quantity,amount,debit,credit,payment_method);\n" +
+//                            "INSERT INTO purchase SELECT date,party_name,invoice_no,purchased_item,quantity,amount,debit,credit,payment_method FROM t1_backup;\n" +
+//                            "DROP TABLE t1_backup;\n" +
+//                            "COMMIT;";
+                            
+           String consecutivenumbers="ALTER TABLE sales ADD sale_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST";
+           System.out.println(resetno);
+           try {
+               Database.koneksiDb().createStatement().execute(sql);
+               Database.koneksiDb().createStatement().execute(resetno);
+               Database.koneksiDb().createStatement().execute(consecutivenumbers);
+               
+    
+                DefaultTableModel model = (DefaultTableModel)jtablesales.getModel();
+                      model.setRowCount(0);
+                      show_sales_table();
+                      JOptionPane.showMessageDialog(null,"Deleted");
+
+                     txtDate.setText("");
+                     txtPartyName.setText("");
+                     txtInvoice.setText("");
+                     txtQuantity.setText("");
+                     txtPurchasedItem.setText("");
+                     txtAmount.setText("");
+                     txtDebit.setText("");
+                     txtCredit.setText("");  
+                       txtRemarks.setText((""));
+           } catch (SQLException ex) {
+               JOptionPane.showMessageDialog(null, ex);
+           }
+           
+       }
+        }
+    }       
+                  
+    total_amount_func();
+    }//GEN-LAST:event_btnDeleteActionPerformed
+
+    private void btnExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportActionPerformed
+       JFileChooser fileChooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                "csv","gif");
+        fileChooser.setFileFilter(filter);
+        fileChooser.setDialogTitle("Specify a file save");
+        int userSelection = fileChooser.showSaveDialog(this);
+        if(userSelection == JFileChooser.APPROVE_OPTION){
+            File fileToSave = fileChooser.getSelectedFile();
+            //lets write to file
+         
+            try {
+                  FileWriter fw = new FileWriter(fileToSave);
+                  
+                  for (int i = 0; i < jtablesales.getColumnCount(); i++) {
+            fw.write(jtablesales.getColumnName(i) + ",");
+        }
+                   fw.write("\n");
+                BufferedWriter bw = new BufferedWriter(fw);
+                for(int i = 0; i < jtablesales.getRowCount();i++) {
+                    for(int j = 0; j < jtablesales.getColumnCount(); j++) {
+                        //write
+                        bw.write(jtablesales.getValueAt(i, j).toString()+",");
+                    }
+                    bw.newLine();//record per line 
+                }
+                JOptionPane.showMessageDialog(this, "Successfully exported!","INFORMATION",JOptionPane.INFORMATION_MESSAGE);
+                bw.close();
+                fw.close();
+            } catch (IOException ex) {
+               JOptionPane.showMessageDialog(this, "ERROR","ERROR MESSAGE",JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_btnExportActionPerformed
+
+    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
+          if (txtPurchasedItem.getText().equals("")){
+           JOptionPane.showMessageDialog(this, "Please select an item");
+       }
+       else{
+           try {
+                int row = jtablesales.getSelectedRow();
+                String value = (jtablesales.getModel().getValueAt(row, 0).toString()); 
+                Database db = new Database();
+                int result = db.update_sales(txtDate.getText(),
+                        txtPartyName.getText(),
+                        txtInvoice.getText(),
+                         (String)comboPaymentMethod.getSelectedItem(),
+                        txtPurchasedItem.getText(),
+                        txtQuantity.getText(),  
+                        parseDouble(txtDebit.getText()),
+                        parseDouble(txtCredit.getText()),
+                        parseDouble(txtAmount.getText()),
+                        txtRemarks.getText(),
+                        value);
+                 if(result>0)
+                {
+                    DefaultTableModel model = (DefaultTableModel)jtablesales.getModel();
+                    model.setRowCount(0);
+                    show_sales_table();
+                    
+                    // For history
+                     db.save_sales_history(txtDate.getText(),
+                        txtPartyName.getText(),
+                        txtInvoice.getText(),
+                         (String)comboPaymentMethod.getSelectedItem(),
+                        txtPurchasedItem.getText(),
+                        txtQuantity.getText(),
+                        parseDouble(txtDebit.getText()),
+                        parseDouble(txtCredit.getText()),
+                         parseDouble(txtAmount.getText()),
+                        txtRemarks.getText());
+                     
+                     
+                    JOptionPane.showMessageDialog(null,"Item Updated");
+                     
+                     txtDate.setText("");
+                     txtPartyName.setText("");
+                     txtInvoice.setText("");
+                     txtQuantity.setText("");
+                     txtPurchasedItem.setText("");
+                     txtAmount.setText("");
+                     txtDebit.setText("");
+                     txtCredit.setText("");
+                     txtRemarks.setText((""));
+                 }
+                else
+                {
+                    JOptionPane.showMessageDialog(null,"Unable to update");
+                }
+                
+                
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e);
+            }
+           
+       }
+      
+       total_amount_func();
+    }//GEN-LAST:event_btnUpdateActionPerformed
+
+    private void jtablesalesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtablesalesMouseClicked
+                
+        int i = jtablesales.getSelectedRow();
+        TableModel model = jtablesales.getModel();
+        txtDate.setText(model.getValueAt(i, 1).toString());
+         txtPartyName.setText(model.getValueAt(i, 2).toString());
+          txtInvoice.setText(model.getValueAt(i, 3).toString());
+           txtPurchasedItem.setText(model.getValueAt(i, 5).toString());
+           txtQuantity.setText(model.getValueAt(i, 6).toString());
+          txtDebit.setText(model.getValueAt(i, 7).toString());
+          txtCredit.setText(model.getValueAt(i, 8).toString());
+          txtAmount.setText(model.getValueAt(i, 9).toString());
+            txtRemarks.setText(model.getValueAt(i, 10).toString());
+               
+    }//GEN-LAST:event_jtablesalesMouseClicked
+
+    private void searchPurchasedTxtKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchPurchasedTxtKeyReleased
+        DefaultTableModel table = (DefaultTableModel)jtablesales.getModel();
+       String search = searchPurchasedTxt.getText();
+        TableRowSorter<DefaultTableModel> tr = new TableRowSorter<DefaultTableModel>(table);
+        jtablesales.setRowSorter(tr);
+        tr.setRowFilter(RowFilter.regexFilter("(?i)" +search));
+    }//GEN-LAST:event_searchPurchasedTxtKeyReleased
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        this.dispose();
+        Menu m = new Menu();
+       m.setVisible(true);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void txtAmountKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtAmountKeyTyped
+        char c = evt.getKeyChar(); 
+        if(Character.isAlphabetic(c)){
+             evt.consume();
+        }
+    }//GEN-LAST:event_txtAmountKeyTyped
+
+    private void txtDebitKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDebitKeyTyped
+          char c = evt.getKeyChar(); 
+        if(Character.isAlphabetic(c)){
+             evt.consume();
+        }
+    }//GEN-LAST:event_txtDebitKeyTyped
+
+    private void txtCreditKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCreditKeyTyped
+         char c = evt.getKeyChar(); 
+        if(Character.isAlphabetic(c)){
+             evt.consume();
+        }
+    }//GEN-LAST:event_txtCreditKeyTyped
+
+    private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
+            txtDate.setText("");
+            txtPartyName.setText("");
+            txtInvoice.setText("");
+            txtQuantity.setText("");
+            txtPurchasedItem.setText("");
+            txtAmount.setText("");
+            txtDebit.setText("");
+            txtCredit.setText("");  
+            txtRemarks.setText((""));
+    }//GEN-LAST:event_btnClearActionPerformed
+
+    private void txtDebitKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDebitKeyPressed
+          if(evt.getKeyCode() == KeyEvent.VK_ENTER) {
+           if(txtDebit.getText().contains("-")){
+              String[] splitValue = txtDebit.getText().split("-");
+               double result = Double.valueOf(splitValue[0]) - Double.valueOf(splitValue[1]);
+               txtDebit.setText(String.valueOf(result));
+           }
+            if(txtDebit.getText().contains("+")){
+              String[] splitValue = txtDebit.getText().split(String.valueOf("\\+"));
+               double result = Double.valueOf(splitValue[0]) + Double.valueOf(splitValue[1]);
+               txtDebit.setText(String.valueOf(result));
+            
+           }
+          }
+    }//GEN-LAST:event_txtDebitKeyPressed
+
+    private void txtAmountKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtAmountKeyReleased
+           if(!txtDebit.getText().equals("") & !txtCredit.getText().equals("")){
+                double credit_value = Double.parseDouble(txtAmount.getText()) - Double.parseDouble(txtDebit.getText());
+                double roundOff = (double) Math.round(credit_value * 100) / 100;
+                txtCredit.setText(String.valueOf(roundOff));
+           }
+        
+        
+        txtDebit.setText(txtAmount.getText());
+    }//GEN-LAST:event_txtAmountKeyReleased
+
+    private void txtCreditKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCreditKeyReleased
+         if(txtCredit.getText().equals("")){
+             txtDebit.setText(txtAmount.getText());
+         }
+        
+        double debit_value = Double.parseDouble(txtAmount.getText()) - Double.parseDouble(txtCredit.getText());
+          double roundOff = (double) Math.round(debit_value * 100) / 100;
+          txtDebit.setText(String.valueOf(roundOff));
+    }//GEN-LAST:event_txtCreditKeyReleased
+
+    private void txtDebitKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDebitKeyReleased
+        if(txtDebit.getText().equals("")){
+             txtCredit.setText(txtAmount.getText());
+         }
+        
+        double tablet_quantity = Double.parseDouble(txtAmount.getText()) - Double.parseDouble(txtDebit.getText());
+          double roundOff = (double) Math.round(tablet_quantity * 100) / 100;
+          txtCredit.setText(String.valueOf(roundOff));
+    }//GEN-LAST:event_txtDebitKeyReleased
+
+    private void txtCreditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCreditKeyPressed
+       if(evt.getKeyCode() == KeyEvent.VK_ENTER) {
+           if(txtCredit.getText().contains("-")){
+              String[] splitValue = txtCredit.getText().split("-");
+               double result = Double.valueOf(splitValue[0]) - Double.valueOf(splitValue[1]);
+               txtCredit.setText(String.valueOf(result));
+           }
+            if(txtCredit.getText().contains("+")){
+              String[] splitValue = txtCredit.getText().split(String.valueOf("\\+"));
+               double result = Double.valueOf(splitValue[0]) + Double.valueOf(splitValue[1]);
+               txtCredit.setText(String.valueOf(result));
+            
+           }
+          }
+    }//GEN-LAST:event_txtCreditKeyPressed
+
+    private void txtAmountKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtAmountKeyPressed
+        if(evt.getKeyCode() == KeyEvent.VK_ENTER) {
+           if(txtAmount.getText().contains("-")){
+              String[] splitValue = txtAmount.getText().split("-");
+               double result = Double.valueOf(splitValue[0]) - Double.valueOf(splitValue[1]);
+               txtAmount.setText(String.valueOf(result));
+           }
+            if(txtAmount.getText().contains("+")){
+              String[] splitValue = txtAmount.getText().split(String.valueOf("\\+"));
+               double result = Double.valueOf(splitValue[0]) + Double.valueOf(splitValue[1]);
+               txtAmount.setText(String.valueOf(result));
+            
+           }
+          }
+    }//GEN-LAST:event_txtAmountKeyPressed
+
+    private void txtRemarksKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtRemarksKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtRemarksKeyPressed
+
+    private void txtRemarksKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtRemarksKeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtRemarksKeyReleased
+
+    private void txtRemarksKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtRemarksKeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtRemarksKeyTyped
+
+    private void txtQuantityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtQuantityActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtQuantityActionPerformed
+
+    private void comboPaymentMethodActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboPaymentMethodActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_comboPaymentMethodActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        SalesHistory sh = new SalesHistory();
+        sh.setVisible(true);
+         sh.setLocationRelativeTo(null);
+        sh.setDefaultCloseOperation(PurchaseHistory.DISPOSE_ON_CLOSE);
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void txtDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDateActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtDateActionPerformed
 
     /**
      * @param args the command line arguments
@@ -60,24 +925,57 @@ public class Sales extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Sales.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Purchase.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Sales.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Purchase.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Sales.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Purchase.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Sales.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Purchase.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Sales().setVisible(true);
+                new Purchase().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnClear;
+    private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnExport;
+    private javax.swing.JButton btnUpdate;
+    private javax.swing.JComboBox comboPaymentMethod;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jtablesales;
+    private javax.swing.JTextField searchPurchasedTxt;
+    private javax.swing.JLabel totalAmountLabel;
+    private javax.swing.JTextField txtAmount;
+    private javax.swing.JTextField txtCredit;
+    private javax.swing.JTextField txtDate;
+    private javax.swing.JTextField txtDebit;
+    private javax.swing.JTextField txtInvoice;
+    private javax.swing.JTextField txtPartyName;
+    private javax.swing.JTextField txtPurchasedItem;
+    private javax.swing.JTextField txtQuantity;
+    private javax.swing.JTextField txtRemarks;
     // End of variables declaration//GEN-END:variables
 }

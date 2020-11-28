@@ -1,15 +1,15 @@
 package ashishpress;
 
-public class PurchaseHistorySets {
-    String date,purchased_item,quantity,party_name,payment_method,invoice_no,remarks;
+public class SaleSets {
+    String date,sale_item,quantity,party_name,payment_method,invoice_no,remarks;
     int Id;
     double amount,debit,credit;
-    public PurchaseHistorySets(int Id,String date, String party_name,String invoice_no,String payment_method,String purchased_item,String quantity,double debit,double credit,double amount,String remarks){
+    public SaleSets(int Id,String date, String party_name,String invoice_no,String payment_method,String sale_item,String quantity,double debit,double credit,double amount,String remarks){
         this.date = date;
         this.Id = Id;
         this.party_name = party_name;
         this.quantity = quantity;
-        this.purchased_item = purchased_item;
+        this.sale_item = sale_item;
         this.quantity = quantity;
         this.amount = amount;
         this.debit = debit;
@@ -44,8 +44,8 @@ public class PurchaseHistorySets {
     return quantity;
     }
      
-     public String getpurchased_item(){
-    return purchased_item;
+     public String getsale_item(){
+    return sale_item;
     }
        
       public double getamount(){

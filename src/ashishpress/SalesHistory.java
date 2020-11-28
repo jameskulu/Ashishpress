@@ -18,32 +18,32 @@ import javax.swing.table.TableRowSorter;
  *
  * @author James
  */
-public class PurchaseHistory extends javax.swing.JFrame {
+public class SalesHistory extends javax.swing.JFrame {
 
     /**
      * Creates new form PurchaseHistory
      */
-    public PurchaseHistory() {
+    public SalesHistory() {
         initComponents();
         show_purchase_history_table();
     }
     
     
-         public ArrayList<PurchaseSets> purchaseList(){
-        ArrayList<PurchaseSets> purchaseList = new ArrayList<>();
+         public ArrayList<SaleSets> purchaseList(){
+        ArrayList<SaleSets> purchaseList = new ArrayList<>();
         try{
         Database db = new Database();
-        String query="select * from purchase_history";
+        String query="select * from sales_history";
         Statement st =db.conn.createStatement();
         ResultSet rs = st.executeQuery(query);
-        PurchaseSets purchase;
+        SaleSets purchase;
         while(rs.next()){
-            purchase=new PurchaseSets(rs.getInt("purchased_id"),
+            purchase=new SaleSets(rs.getInt("sale_id"),
                     rs.getString("date"),
                     rs.getString("party_name"),
                     rs.getString("invoice_no"),
                      rs.getString("payment_method"),       
-                    rs.getString("purchased_item"),
+                    rs.getString("sale_item"),
                     rs.getString("quantity"),      
                     rs.getDouble("debit"),
                     rs.getDouble("credit"),
@@ -60,7 +60,7 @@ public class PurchaseHistory extends javax.swing.JFrame {
    
     
     public void show_purchase_history_table(){
-        ArrayList<PurchaseSets> list = purchaseList();
+        ArrayList<SaleSets> list = purchaseList();
         DefaultTableModel model =(DefaultTableModel)jtablephistory.getModel();
         Object[] row = new Object[11];
         for(int i=0; i<list.size();i++){
@@ -69,7 +69,7 @@ public class PurchaseHistory extends javax.swing.JFrame {
             row[2]=list.get(i).getparty_name();
             row[3]=list.get(i).getinvoice_no();
             row[4]=list.get(i).getpayment_method();
-            row[5]=list.get(i).getpurchased_item();
+            row[5]=list.get(i).getsale_item();
             row[6]=list.get(i).getquantity();
             row[7]=list.get(i).getdebit();
             row[8]=list.get(i).getcredit();
@@ -107,7 +107,7 @@ public class PurchaseHistory extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
-        jLabel5.setText("Purchase History");
+        jLabel5.setText("Sales History");
 
         jtablephistory.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -185,7 +185,7 @@ public class PurchaseHistory extends javax.swing.JFrame {
                                 .addComponent(searchPurchasedHistoryTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1029, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(388, 388, 388)
+                        .addGap(405, 405, 405)
                         .addComponent(jLabel5)))
                 .addContainerGap(22, Short.MAX_VALUE))
         );
@@ -226,7 +226,7 @@ public class PurchaseHistory extends javax.swing.JFrame {
         Database db = new Database();
          int a = JOptionPane.showConfirmDialog(null,"Do you sure want to delete all the history ?","Delete History",JOptionPane.YES_NO_OPTION);
         if(a==0){ 
-        db.delete_purchase_history();
+        db.delete_sales_history();
         JOptionPane.showMessageDialog(null,"Deleted all the history");
         
          DefaultTableModel model = (DefaultTableModel)jtablephistory.getModel();
@@ -247,10 +247,9 @@ public class PurchaseHistory extends javax.swing.JFrame {
            String NOMER = jtablephistory.getValueAt(row, 0).toString();
            System.out.println(NOMER);
 
-           String sql = "DELETE FROM purchase_history WHERE purchased_id='"+NOMER+"'";
-           String resetno = "ALTER TABLE purchase_history DROP purchased_id";                            
-           String consecutivenumbers="ALTER TABLE purchase_history ADD purchased_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST";
-           System.out.println(resetno);
+           String sql = "DELETE FROM sales_history WHERE sale_id='"+NOMER+"'";
+           String resetno = "ALTER TABLE sales_history DROP sale_id";                            
+           String consecutivenumbers="ALTER TABLE sales_history ADD sale_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST";
            try {
                Database.koneksiDb().createStatement().execute(sql);
                Database.koneksiDb().createStatement().execute(resetno);
