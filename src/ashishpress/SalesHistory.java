@@ -5,6 +5,8 @@
  */
 package ashishpress;
 
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -26,7 +28,14 @@ public class SalesHistory extends javax.swing.JFrame {
     public SalesHistory() {
         initComponents();
         show_purchase_history_table();
+        seticon();
     }
+    
+      private void seticon(){
+       Image icon = Toolkit.getDefaultToolkit().getImage("icon.jpg");  
+        setIconImage(icon);
+    }
+    
     
     
          public ArrayList<SaleSets> purchaseList(){

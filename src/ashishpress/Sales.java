@@ -1,6 +1,8 @@
 package ashishpress;
 
 import com.sun.glass.events.KeyEvent;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -24,7 +26,14 @@ public class Sales extends javax.swing.JFrame {
         initComponents();
         show_sales_table();
         total_amount_func();
+        seticon();
     }
+    
+      private void seticon(){
+       Image icon = Toolkit.getDefaultToolkit().getImage("icon.jpg");  
+        setIconImage(icon);
+    }
+    
     
      public ArrayList<SaleSets> saleList(){
         ArrayList<SaleSets> saleList = new ArrayList<>();
@@ -142,6 +151,7 @@ public class Sales extends javax.swing.JFrame {
         txtRemarks = new javax.swing.JTextField();
         jButton2 = new javax.swing.JButton();
         totalAmountLabel = new javax.swing.JLabel();
+        jLabel13 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -339,6 +349,8 @@ public class Sales extends javax.swing.JFrame {
             }
         });
 
+        jLabel13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ashishpress/icon.jpg"))); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -413,7 +425,9 @@ public class Sales extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
                                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 974, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(322, 322, 322)
+                                .addGap(180, 180, 180)
+                                .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(34, 34, 34)
                                 .addComponent(jLabel5)
                                 .addGap(0, 0, Short.MAX_VALUE))))
                     .addGroup(layout.createSequentialGroup()
@@ -430,14 +444,17 @@ public class Sales extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2)
-                    .addComponent(jLabel5))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(searchPurchasedTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel11))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButton1)
+                            .addComponent(jButton2)
+                            .addComponent(jLabel5))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(searchPurchasedTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel11)))
+                    .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
@@ -732,17 +749,20 @@ public class Sales extends javax.swing.JFrame {
 
     private void jtablesalesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtablesalesMouseClicked
                 
-        int i = jtablesales.getSelectedRow();
+         int i = jtablesales.getSelectedRow();
         TableModel model = jtablesales.getModel();
-        txtDate.setText(model.getValueAt(i, 1).toString());
-         txtPartyName.setText(model.getValueAt(i, 2).toString());
-          txtInvoice.setText(model.getValueAt(i, 3).toString());
-           txtPurchasedItem.setText(model.getValueAt(i, 5).toString());
-           txtQuantity.setText(model.getValueAt(i, 6).toString());
-          txtDebit.setText(model.getValueAt(i, 7).toString());
-          txtCredit.setText(model.getValueAt(i, 8).toString());
-          txtAmount.setText(model.getValueAt(i, 9).toString());
-            txtRemarks.setText(model.getValueAt(i, 10).toString());
+        
+        int rowModel=jtablesales.convertRowIndexToModel(i);
+   
+        txtDate.setText(model.getValueAt(rowModel, 1).toString());
+         txtPartyName.setText(model.getValueAt(rowModel, 2).toString());
+          txtInvoice.setText(model.getValueAt(rowModel, 3).toString());
+           txtPurchasedItem.setText(model.getValueAt(rowModel, 5).toString());
+           txtQuantity.setText(model.getValueAt(rowModel, 6).toString());
+          txtDebit.setText(model.getValueAt(rowModel, 7).toString());
+          txtCredit.setText(model.getValueAt(rowModel, 8).toString());
+          txtAmount.setText(model.getValueAt(rowModel, 9).toString());
+            txtRemarks.setText(model.getValueAt(rowModel, 10).toString());
                
     }//GEN-LAST:event_jtablesalesMouseClicked
 
@@ -951,6 +971,7 @@ public class Sales extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

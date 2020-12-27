@@ -5,19 +5,33 @@
  */
 package ashishpress;
 
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
 /**
  *
  * @author James
  */
+
 public class Menu extends javax.swing.JFrame {
 
-    /**
-     * Creates new form Menu
-     */
+
+     
     public Menu() {
         initComponents();
+        seticon();
     }
 
+    
+    private void seticon(){
+       Image icon = Toolkit.getDefaultToolkit().getImage("icon.jpg");  
+        setIconImage(icon);
+    }
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -37,7 +51,6 @@ public class Menu extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(103, 181, 141));
         setMinimumSize(new java.awt.Dimension(684, 380));
-        setPreferredSize(new java.awt.Dimension(610, 480));
         setResizable(false);
         getContentPane().setLayout(null);
 
@@ -57,7 +70,7 @@ public class Menu extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButton1);
-        jButton1.setBounds(70, 310, 205, 63);
+        jButton1.setBounds(70, 220, 205, 63);
 
         jButton2.setBackground(new java.awt.Color(0, 204, 204));
         jButton2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -75,7 +88,7 @@ public class Menu extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButton2);
-        jButton2.setBounds(360, 310, 205, 63);
+        jButton2.setBounds(360, 220, 205, 63);
         getContentPane().add(jLabel2);
         jLabel2.setBounds(0, 22, 0, 0);
 
@@ -104,11 +117,11 @@ public class Menu extends javax.swing.JFrame {
         );
 
         getContentPane().add(jPanel2);
-        jPanel2.setBounds(150, 80, 380, 100);
+        jPanel2.setBounds(140, 30, 380, 100);
 
         jLabel3.setBackground(new java.awt.Color(0, 0, 0));
         jLabel3.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel3.setIcon(new javax.swing.ImageIcon("D:\\AshishPress\\image.jpg")); // NOI18N
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ashishpress/image.jpg"))); // NOI18N
         getContentPane().add(jLabel3);
         jLabel3.setBounds(20, -50, 630, 580);
 
